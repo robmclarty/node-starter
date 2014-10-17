@@ -1,0 +1,8 @@
+config/database.js
+.DS_Store
+node_modules
+public/stylesheets/**/*
+public/javascripts/**/*
+public/images/**/*
+public/fonts/**/*
+.sass-cache
