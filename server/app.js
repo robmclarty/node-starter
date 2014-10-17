@@ -41,6 +41,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(csrf());
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Custom middleware for adding `currentUser` to all requests when user is logged in.

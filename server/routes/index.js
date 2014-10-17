@@ -21,7 +21,10 @@ router.get('/restricted', isAuthenticated, function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-  res.render('login', { message: req.flash('loginMessage') });
+  res.render('login', { 
+    message: req.flash('loginMessage'), 
+    csrfToken: req.csrfToken() 
+  });
 });
 
 router.post('/login', passport.authenticate('local-login', {
@@ -31,7 +34,10 @@ router.post('/login', passport.authenticate('local-login', {
 }));
 
 router.get('/signup', function(req, res) {
-  res.render('signup', { message: req.flash('signupMessage') });
+  res.render('signup', {
+    message: req.flash('signupMessage'), 
+    csrfToken: req.csrfToken 
+  });
 });
 
 router.post('/signup', passport.authenticate('local-signup', {
