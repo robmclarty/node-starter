@@ -4,6 +4,18 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/application.min.css')
   body
-    if message && message.length > 0
-      div= message
-    block content
+    header
+      if user
+        | Logged in as
+        | 
+        b= user.email
+        | 
+        a(href='/logout') Logout
+      else
+        a(href='/login') Login
+        | &nbsp; - &nbsp; 
+        a(href='/signup') Signup
+    main
+      if message && message.length > 0
+        div= message
+      block content
