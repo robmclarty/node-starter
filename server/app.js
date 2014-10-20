@@ -12,6 +12,8 @@ var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var dbConfig = require('../config/database.js');
 var passport = require('passport');
+var currentUserMiddlware = require('./middleware/current_user_middleware');
+var csrfMiddleware = require('./middleware/csrf_middleware');
 
 mongoose.connect(dbConfig.url); // connect to database using info in dbConfig file
 require('./passport.js')(passport); // pass passport for configuration
@@ -20,15 +22,6 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
-// Use AngularJS's X-XSRF-TOKEN header when looking for CSRF token.
-var csrfValue = function(req) {
-  var token = (req.body && req.body._csrf) ||
-              (req.query && req.query._csrf) ||
-              (req.headers['x-csrf-token']) ||
-              (req.headers['x-xsrf-token']);
-  return token;
-};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -50,27 +43,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(csrf({ value: csrfValue }));
+app.use(csrf({ value: csrfMiddleware.csrfValue }));
+app.use(currentUserMiddlware);
+app.use(csrfMiddleware.angularCSRF);
 app.use(express.static(path.join(__dirname, '../public')));
-
-// Custom middleware for adding `currentUser` to all requests when user is logged in.
-app.use(function(req, res, next) {
-  if (req.user) {
-    var User = require('./models/user');
-    User.findById(req.user, function(err, user) {
-      res.locals.currentUser = user;
-      next();
-    });
-  } else {
-    next();
-  }
-});
-
-// Set AngularJS's CSRF token header.
-app.use(function(req, res, next) {
-  res.cookie('XSRF-TOKEN', req.csrfToken());
-  next();
-})
 
 app.use('/', routes);
 app.use('/users', users);

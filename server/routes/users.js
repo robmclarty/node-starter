@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var authMiddleware = require('../middleware/auth_middleware');
+var isAuthenticated = authMiddleware.isAuthenticated;
 var User = require('../models/user');
 
 // GET list of users.
