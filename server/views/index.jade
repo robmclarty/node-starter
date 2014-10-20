@@ -1,5 +1,39 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 The App
+  p Welcome to the app.
+  #userlist-container
+    h2 User List
+    #userlist
+      table
+        thead
+          th Username
+          th Email
+          th Delete?
+        tbody
+
+    #userinfo
+      h2 User Info
+      p
+        strong Name:
+        span(id="userinfo-name")
+        br
+        strong Email:
+        span(id="userinfo-email")
+        br
+        strong ID:
+        span(id="userinfo-id")
+        br
+        strong Description:
+        span(id="userinfo-description")
+
+    #adduser
+      h2 Add User
+      fieldset
+        input#userName(type="text", placeholder="Name")
+        input#userEmail(type="text", placeholder="User Email")
+        br
+        textarea#userDescription(placeholder="Description")
+        br
+        button#create-user-button Add User

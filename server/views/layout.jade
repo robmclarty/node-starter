@@ -2,6 +2,7 @@ doctype html
 html
   head
     title= title
+    meta(name="csrf-token", content="#{ csrfToken }")
     link(rel='stylesheet', href='/stylesheets/application.min.css')
   body
     header
@@ -19,3 +20,5 @@ html
       if message && message.length > 0
         div= message
       block content
+    
+    script(src='/javascripts/application.min.js')

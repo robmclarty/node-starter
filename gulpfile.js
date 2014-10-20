@@ -13,7 +13,11 @@ var gulp = require('gulp'),
     log = util.log;
 
 var paths = {
-  scripts: ['./client/**/*.js'],
+  scripts: [
+    './vendor/javascripts/jquery-2.1.1.js',
+    './client/csrf.js',
+    './client/simple_users.js'
+  ],
   images: ['./assets/images/**/*'],
   sass: ['./assets/sass/**/*.js'],
   server: './bin/www'
@@ -32,7 +36,7 @@ gulp.task('server', function() {
 });
 
 // Compile all pre-processed assets.
-gulp.task('build', ['jshint', 'scripts', 'sass', 'imagemin']);
+gulp.task('build', ['scripts', 'sass', 'imagemin']);
 
 // Watch for changes in pre-processed source files and re-build if changed.
 gulp.task('watch', function() {
@@ -60,6 +64,7 @@ gulp.task('scripts', function() {
   log("Generate JS files " + (new Date()).toString());
   gulp.src(paths.scripts)
       .pipe(concat('application.js'))
+      .pipe(rename({ suffix: '.min' }))
       .pipe(uglify())
       .pipe(gulp.dest('./public/javascripts'))
 });

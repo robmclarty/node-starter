@@ -21,6 +21,15 @@ var users = require('./routes/users');
 
 var app = express();
 
+// Use AngularJS's X-XSRF-TOKEN header when looking for CSRF token.
+var csrfValue = function(req) {
+  var token = (req.body && req.body._csrf) ||
+              (req.query && req.query._csrf) ||
+              (req.headers['x-csrf-token']) ||
+              (req.headers['x-xsrf-token']);
+  return token;
+};
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -36,12 +45,12 @@ app.use(session({
   secret: '42',
   resave: true,
   saveUninitialized: true,
-  key: 'passwordless_session'
+  key: 'app_session'
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(csrf());
+app.use(csrf({ value: csrfValue }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Custom middleware for adding `currentUser` to all requests when user is logged in.
@@ -56,6 +65,12 @@ app.use(function(req, res, next) {
     next();
   }
 });
+
+// Set AngularJS's CSRF token header.
+app.use(function(req, res, next) {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  next();
+})
 
 app.use('/', routes);
 app.use('/users', users);
